@@ -1,0 +1,438 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+
+    <type name="SysPay\Payment\Model\Method\Facade">
+        <arguments>
+            <argument name="code" xsi:type="const">SysPay\Payment\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">SysPay\Payment\Block\Form\Cc</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+            <argument name="valueHandlerPool" xsi:type="object">SysPayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">SysPayCommandPool</argument>
+            <argument name="validatorPool" xsi:type="object">SysPayValidatorPool</argument>
+        </arguments>
+    </type>
+
+    <!-- Config -->
+    <type name="SysPay\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">SysPay\Payment\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </type>
+    <!-- Config -->
+
+
+    <!-- Value Handler -->
+    <virtualType name="SysPayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">SysPayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">SysPay\Payment\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+    <!-- Value Handler -->
+
+
+    <!-- Commands infrastructure -->
+    <virtualType name="SysPayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">SysPayAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">SysPayCaptureCommand</item>
+                <item name="sale" xsi:type="string">SysPaySaleCommand</item>
+                <item name="refund" xsi:type="string">SysPayRefundCommand</item>
+                <item name="void" xsi:type="string">SysPayVoidCommand</item>
+                <item name="deny_payment" xsi:type="string">SysPay\Payment\Gateway\Command\DenyPaymentCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- Commands infrastructure -->
+
+
+    <!-- Commands -->
+    <virtualType name="SysPayAuthorizeCommand" type="SysPay\Payment\Gateway\Command\GeneralCommand">
+        <arguments>
+            <argument name="validator" xsi:type="object">SysPay\Payment\Gateway\Validator\GeneralResponseValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">SysPayAuthorizeRequestBuilder</argument>
+            <argument name="responseHandler" xsi:type="object">SysPayAuthorizeTransactionHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SysPay\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">SysPay\Payment\Gateway\Http\Client\GeneralClient</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPaySaleCommand" type="SysPay\Payment\Gateway\Command\GeneralCommand">
+        <arguments>
+            <argument name="validator" xsi:type="object">SysPay\Payment\Gateway\Validator\GeneralResponseValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">SysPaySaleRequestBuilder</argument>
+            <argument name="responseHandler" xsi:type="object">SysPaySaleTransactionHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SysPay\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">SysPay\Payment\Gateway\Http\Client\GeneralClient</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayCaptureCommand" type="SysPay\Payment\Gateway\Command\GeneralCommand">
+        <arguments>
+            <argument name="validator" xsi:type="object">SysPay\Payment\Gateway\Validator\GeneralResponseValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">SysPay\Payment\Gateway\Request\CaptureRequestBuilder</argument>
+            <argument name="responseHandler" xsi:type="object">SysPayCaptureTransactionHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SysPayCaptureTransferFactory</argument>
+            <argument name="client" xsi:type="object">SysPay\Payment\Gateway\Http\Client\GeneralClient</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayRefundCommand" type="SysPay\Payment\Gateway\Command\GeneralCommand">
+        <arguments>
+            <argument name="validator" xsi:type="object">SysPay\Payment\Gateway\Validator\RefundResponseValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">SysPay\Payment\Gateway\Request\RefundRequestBuilder</argument>
+            <argument name="responseHandler" xsi:type="object">SysPayRefundTransactionHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SysPayRefundTransferFactory</argument>
+            <argument name="client" xsi:type="object">SysPay\Payment\Gateway\Http\Client\GeneralClient</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayVoidCommand" type="SysPay\Payment\Gateway\Command\GeneralCommand">
+        <arguments>
+            <argument name="validator" xsi:type="object">SysPay\Payment\Gateway\Validator\GeneralResponseValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">SysPay\Payment\Gateway\Request\VoidRequestBuilder</argument>
+            <argument name="responseHandler" xsi:type="object">SysPayVoidTransactionHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SysPayVoidTransferFactory</argument>
+            <argument name="client" xsi:type="object">SysPay\Payment\Gateway\Http\Client\GeneralClient</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayMerchantTokenRetrieveCommand" type="SysPay\Payment\Gateway\Command\GeneralCommand">
+        <arguments>
+            <argument name="validator" xsi:type="object">SysPay\Payment\Gateway\Validator\GeneralResponseValidator</argument>
+            <argument name="requestBuilder" xsi:type="object">SysPay\Payment\Gateway\Request\MerchantToken\RetrieveRequestBuilder</argument>
+            <argument name="responseHandler" xsi:type="object">SysPay\Payment\Gateway\Response\MerchantToken\RetrieveHandler</argument>
+            <argument name="transferFactory" xsi:type="object">SysPay\Payment\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">SysPay\Payment\Gateway\Http\Client\GeneralClient</argument>
+        </arguments>
+    </virtualType>
+    <!-- Commands -->
+
+    <!-- Request Builders -->
+    <virtualType name="SysPayAuthorizeRequestBuilder" type="SysPay\Payment\Gateway\Request\PaymentRequestBuilder">
+        <arguments>
+            <argument name="isAuthorize" xsi:type="boolean">true</argument>
+            <argument name="config" xsi:type="object">SysPay\Payment\Gateway\Config\Config</argument>
+            <argument name="subjectReader" xsi:type="object">SysPay\Payment\Gateway\Helper\SubjectReader</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPaySaleRequestBuilder" type="SysPay\Payment\Gateway\Request\PaymentRequestBuilder">
+        <arguments>
+            <argument name="isAuthorize" xsi:type="boolean">false</argument>
+            <argument name="config" xsi:type="object">SysPay\Payment\Gateway\Config\Config</argument>
+            <argument name="subjectReader" xsi:type="object">SysPay\Payment\Gateway\Helper\SubjectReader</argument>
+        </arguments>
+    </virtualType>
+    <!-- Request Builders -->
+
+    <!-- Transfers Factory-->
+    <virtualType name="SysPayCaptureTransferFactory" type="SysPay\Payment\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="uri" xsi:type="string">merchant/payment/%paymentId%/capture</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayRefundTransferFactory" type="SysPay\Payment\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="uri" xsi:type="string">merchant/refund</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayVoidTransferFactory" type="SysPay\Payment\Gateway\Http\TransferFactory">
+        <arguments>
+            <argument name="uri" xsi:type="string">merchant/payment/%paymentId%/void</argument>
+        </arguments>
+    </virtualType>
+    <!-- Transfers Factory-->
+
+    <!-- Clients -->
+    <type name="SysPay\Payment\Gateway\Http\Client\GeneralClient">
+        <arguments>
+            <argument name="logger" xsi:type="object">SysPayPaymentLogger</argument>
+            <argument name="paymentLogger" xsi:type="object">SysPayLoggerForTransactionSale</argument>
+        </arguments>
+    </type>
+    <!-- Clients -->
+
+    <!-- Handles -->
+    <type name="SysPay\Payment\Gateway\Response\PaymentTransactionHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">SysPay\Payment\Api\Data\TransactionInterface::TYPE_SALE</argument>
+            <argument name="transactionAdditionalInformationMapping" xsi:type="array">
+                <item name="payment" xsi:type="array">
+                    <item name="class" xsi:type="string">class</item>
+                    <item name="id" xsi:type="string">id</item>
+                    <item name="amount" xsi:type="string">amount</item>
+                    <item name="status" xsi:type="string">status</item>
+                    <item name="merchant_id" xsi:type="string">merchant_id</item>
+                    <item name="capture_date" xsi:type="string">capture_date</item>
+                </item>
+                <item name="payment_method" xsi:type="array">
+                    <item name="display" xsi:type="string">display</item>
+                </item>
+            </argument>
+            <argument name="failureCategories" xsi:type="array">
+                <item name="card_flagged" xsi:type="string">The card has been flagged as lost or stolen</item>
+                <item name="declined" xsi:type="string">The transaction has been declined by the acquirer</item>
+                <item name="duplicated" xsi:type="string">Two transactions with the same information have been attempted in a too short period</item>
+                <item name="expired" xsi:type="string">The card has expired</item>
+                <item name="fraud_suspicious" xsi:type="string">The transaction has been refused for suspicion of fraud</item>
+                <item name="insufficient_funds" xsi:type="string">There wasn’t enough money available to complete the transaction</item>
+                <item name="invalid_card" xsi:type="string">The card is not supported</item>
+                <item name="invalid_card_number" xsi:type="string">The card number is invalid</item>
+                <item name="invalid_cv2" xsi:type="string">The card verification code is not valid</item>
+                <item name="invalid_details" xsi:type="string">The card information are not valid</item>
+                <item name="other" xsi:type="string">The transaction was refused by the acquirer but the reason could not be precisely determined</item>
+                <item name="technical_error" xsi:type="string">A technical error occured while attempting to process the transaction</item>
+                <item name="unsupported" xsi:type="string">The card scheme is not supported</item>
+                <item name="service_unavailable" xsi:type="string">The third party payment service provider is unavailable</item>
+                <item name="timeout" xsi:type="string">The payment was not processed in due time</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="SysPaySaleTransactionHandler" type="SysPay\Payment\Gateway\Response\PaymentTransactionHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">SysPay\Payment\Api\Data\TransactionInterface::TYPE_SALE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayAuthorizeTransactionHandler" type="SysPay\Payment\Gateway\Response\PaymentTransactionHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">SysPay\Payment\Api\Data\TransactionInterface::TYPE_AUTH</argument>
+            <argument name="transactionAdditionalInformationMapping" xsi:type="array">
+                <item name="payment" xsi:type="array">
+                    <item name="preauth_expiration_date" xsi:type="string">preauth_expiration_date</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayCaptureTransactionHandler" type="SysPay\Payment\Gateway\Response\PaymentTransactionHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">SysPay\Payment\Api\Data\TransactionInterface::TYPE_CAPTURE</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayRefundTransactionHandler" type="SysPay\Payment\Gateway\Response\RefundTransactionHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">SysPay\Payment\Api\Data\TransactionInterface::TYPE_REFUND</argument>
+            <argument name="transactionAdditionalInformationMapping" xsi:type="array">
+                <item name="refund" xsi:type="array">
+                    <item name="class" xsi:type="string">class</item>
+                    <item name="id" xsi:type="string">id</item>
+                    <item name="amount" xsi:type="string">amount</item>
+                    <item name="status" xsi:type="string">status</item>
+                    <item name="merchant_id" xsi:type="string">merchant_id</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayVoidTransactionHandler" type="SysPay\Payment\Gateway\Response\VoidTransactionHandler">
+        <arguments>
+            <argument name="transactionType" xsi:type="const">SysPay\Payment\Api\Data\TransactionInterface::TYPE_VOID</argument>
+            <argument name="transactionAdditionalInformationMapping" xsi:type="array">
+                <item name="payment" xsi:type="array">
+                    <item name="class" xsi:type="string">class</item>
+                    <item name="id" xsi:type="string">id</item>
+                    <item name="amount" xsi:type="string">amount</item>
+                    <item name="status" xsi:type="string">status</item>
+                    <item name="merchant_id" xsi:type="string">merchant_id</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- Handles -->
+
+
+    <!-- Validators -->
+    <type name="SysPay\Payment\Gateway\Validator\RefundResponseValidator">
+        <arguments>
+            <argument name="statusDescription" xsi:type="array">
+                <item name="SUCCESS" xsi:type="string">The refund has been completed successfully</item>
+                <item name="FAILED" xsi:type="string">The refund has been refused.</item>
+                <item name="WAITING" xsi:type="string">Can not do refund, this means we are waiting for an external
+                    action in order to know about the refund status. Some refund methods are processed asynchronously or
+                    require the user to take some actions (like printing and sending a form) to complete the refund.
+                </item>
+                <item name="ERROR" xsi:type="string">An error occured while processing the refund</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="SysPayCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">SysPay\Payment\Gateway\Config\Config</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">SysPayCountryValidator</item>
+                <item name="currency" xsi:type="string">SysPay\Payment\Gateway\Validator\CurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- Validators -->
+
+
+    <!-- Logger -->
+    <virtualType name="SysPayPaymentLogger" type="Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">syspay</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">SysPay\Payment\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayPaymentLoggerEms" type="Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">syspay_ems</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">SysPay\Payment\Logger\HandlerEms</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SysPayLoggerForTransactionSale" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">SysPay\Payment\Gateway\Config\Config</argument>
+            <argument name="logger" xsi:type="object">SysPayPaymentLogger</argument>
+        </arguments>
+    </virtualType>
+    <type name="SysPay\Payment\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <!-- Logger -->
+
+
+    <!-- Observer -->
+    <type name="SysPay\Payment\Observer\DataAssignObserver">
+        <arguments>
+            <argument name="additionalInformationList" xsi:type="array">
+                <item name="tmp_payment_token" xsi:type="const">SysPay\Payment\Observer\DataAssignObserver::TMP_PAYMENT_TOKEN</item>
+                <item name="save_card" xsi:type="const">SysPay\Payment\Observer\DataAssignObserver::SAVE_CARD</item>
+                <item name="saved_card_token_id" xsi:type="const">SysPay\Payment\Observer\DataAssignObserver::SAVED_CARD_TOKEN_ID</item>
+                <item name="cc_cid" xsi:type="const">SysPay\Payment\Observer\DataAssignObserver::CC_CID</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Observer -->
+
+    <!-- Factory -->
+    <type name="SysPay\Payment\Gateway\Request\PaymentRequestType\PaymentRequestTypeFactory">
+        <arguments>
+            <argument name="types" xsi:type="array">
+                <item name="withTemporaryToken" xsi:type="string">SysPay\Payment\Gateway\Request\PaymentRequestType\WithTemporaryToken</item>
+                <item name="withTemporaryTokenAndSaveCard" xsi:type="string">SysPay\Payment\Gateway\Request\PaymentRequestType\WithTemporaryTokenAndSaveCard</item>
+                <item name="withSavedCardToken" xsi:type="string">SysPay\Payment\Gateway\Request\PaymentRequestType\WithSavedCardToken</item>
+                <item name="hostedPageRedirect" xsi:type="string">SysPay\Payment\Gateway\Request\PaymentRequestType\HostedPage\Redirect</item>
+                <item name="hostedPageRedirectWithToken" xsi:type="string">SysPay\Payment\Gateway\Request\PaymentRequestType\HostedPage\RedirectWithToken</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Factory -->
+
+    <!-- CRUD -->
+    <preference for="SysPay\Payment\Api\Data\CardTokenInterface" type="SysPay\Payment\Model\Data\CardTokenData"/>
+    <preference for="SysPay\Payment\Api\GetCardTokenListInterface" type="SysPay\Payment\Query\CardToken\GetListQuery"/>
+    <preference for="SysPay\Payment\Api\SaveCardTokenInterface" type="SysPay\Payment\Command\CardToken\SaveCommand"/>
+    <preference for="SysPay\Payment\Api\DeleteCardTokenByIdInterface"
+                type="SysPay\Payment\Command\CardToken\DeleteByIdCommand"/>
+    <preference for="SysPay\Payment\Api\LoadCardTokenByIdInterface"
+                type="SysPay\Payment\Command\CardToken\LoadByIdCommand"/>
+    <preference for="SysPay\Payment\Api\LoadCardTokenByTokenInterface"
+                type="SysPay\Payment\Command\CardToken\LoadByTokenCommand"/>
+    <preference for="SysPay\Payment\Api\Data\CardTokenSearchResultsInterface"
+                type="SysPay\Payment\Model\CardTokenSearchResults"/>
+    <preference for="SysPay\Payment\Api\CardTokenRepositoryInterface"
+                type="SysPay\Payment\Model\CardTokenRepository"/>
+
+    <preference for="SysPay\Payment\Api\Customer\CardTokenManagementInterface"
+                type="SysPay\Payment\Model\Customer\CardTokenManagement"/>
+    <!-- CRUD -->
+
+
+    <type name="SysPay\Payment\Observer\SaleResponseHandleAfterObserver">
+        <arguments>
+            <argument name="logger" xsi:type="object">SysPayPaymentLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="SysPay\Payment\Model\CardTokenModel">
+        <arguments>
+            <argument name="merchantTokenRetrieveCommand" xsi:type="object">SysPayMerchantTokenRetrieveCommand</argument>
+        </arguments>
+    </type>
+
+    <!-- Controllers -->
+    <type name="SysPay\Payment\Controller\Ems\Handler">
+        <arguments>
+            <argument name="logger" xsi:type="object">SysPayPaymentLoggerEms</argument>
+        </arguments>
+    </type>
+    <type name="SysPay\Payment\Controller\Redirect\Handler">
+        <arguments>
+            <argument name="paymentLogger" xsi:type="object">SysPayLoggerForTransactionSale</argument>
+            <argument name="logger" xsi:type="object">SysPayPaymentLogger</argument>
+        </arguments>
+    </type>
+    <!-- Controllers -->
+
+    <!-- EMS Resolver factory -->
+
+    <type name="SysPay\Payment\Http\Ems\Request\Handler\PaymentTransaction">
+        <arguments>
+            <argument name="type" xsi:type="string">payment_transaction</argument>
+        </arguments>
+    </type>
+    <type name="SysPay\Payment\Http\Ems\Request\Handler\RefundTransaction">
+        <arguments>
+            <argument name="type" xsi:type="string">refund_transaction</argument>
+        </arguments>
+    </type>
+    <type name="SysPay\Payment\Http\Ems\Request\Handler\Token">
+        <arguments>
+            <argument name="type" xsi:type="string">token</argument>
+        </arguments>
+    </type>
+
+    <type name="SysPay\Payment\Http\Ems\Request\HandlerFactory">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="payment" xsi:type="string">SysPay\Payment\Http\Ems\Request\Handler\PaymentTransaction</item>
+                <item name="refund" xsi:type="string">SysPay\Payment\Http\Ems\Request\Handler\RefundTransaction</item>
+                <item name="token" xsi:type="string">SysPay\Payment\Http\Ems\Request\Handler\Token</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="SysPay\Payment\Http\Ems\Request\Handler\PaymentTransaction">
+        <arguments>
+            <argument name="transactionHandler" xsi:type="object">SysPay\Payment\Gateway\Response\PaymentTransactionHandler</argument>
+        </arguments>
+    </type>
+    <type name="SysPay\Payment\Http\Ems\Request\Handler\RefundTransaction">
+        <arguments>
+            <argument name="transactionHandler" xsi:type="object">SysPayRefundTransactionHandler</argument>
+        </arguments>
+    </type>
+    <!-- EMS Resolver factory -->
+
+    <type name="Magento\Sales\Model\Order\StatusResolver">
+        <plugin name="syspay_payment_order_status_resolver"
+                type="SysPay\Payment\Plugin\Sales\Model\Order\StatusResolver"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Payment">
+        <plugin name="syspay_payment_resolve_order_status_after_void"
+                type="SysPay\Payment\Plugin\Sales\Model\Order\Payment\ResolveOrderStatusAfterVoid"/>
+    </type>
+
+    <type name="SysPay\Payment\Model\Ui\ConfigProvider">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="SysPay\Payment\Model\Customer\CardTokenManagement">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+</config>

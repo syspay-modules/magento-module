@@ -1,0 +1,28 @@
+{
+    "name": "syspay/module-payment",
+    "version": "1.2.0",
+    "description": "N/A",
+    "type": "magento2-module",
+    "require": {
+        "magento/framework": "*",
+        "magento/module-checkout": "100.4.*",
+        "magento/module-sales": "103.0.*"
+    },
+    "license": [
+        "Proprietary"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "SysPay\\Payment\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrii B.",
+            "email": "andrii@encomage.com"
+        }
+    ]
+}

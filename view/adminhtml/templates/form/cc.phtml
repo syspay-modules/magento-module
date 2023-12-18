@@ -1,0 +1,62 @@
+<?php
+use SysPay\Payment\Observer\DataAssignObserver;
+/**
+ * @var $block \SysPay\Payment\Block\Form\Cc
+ * @var $secureRenderer \Magento\Framework\View\Helper\SecureHtmlRenderer
+ * @var $escaper \Magento\Framework\Escaper
+ */
+$code = $escaper->escapeHtml($block->getMethodCode());
+$tokens = $block->getSavedCardsTokens();
+?>
+
+<fieldset class="admin__fieldset payment-method" id="payment_form_<?= /* @noEscape */ $code ?>">
+    <div class="field-type admin__field _required">
+        <label class="admin__field-label" for="<?= /* @noEscape */ $code ?>_cc_type">
+            <span><?= $block->escapeHtml(__('Credit Card')) ?></span>
+        </label>
+        <div class="admin__field-control">
+            <select id="<?= /* @noEscape */ $code ?>_card_token"
+                    name="payment[<?= DataAssignObserver::SAVED_CARD_TOKEN_ID ?>]"
+                    class="required-entry admin__control-select">
+                <?php foreach ($tokens as $tokenData): ?>
+                    <option value="<?= $block->escapeHtml($tokenData['value']) ?>">
+                        <?= $block->escapeHtml($tokenData['label']) ?>
+                    </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+    <?php if ($block->hasVerification()): ?>
+        <div class="field-number required admin__field _required">
+            <label class="admin__field-label" for="<?= /* @noEscape */ $code ?>_cc_cid">
+                <span><?= $block->escapeHtml(__('Card Verification Number')) ?></span>
+            </label>
+            <div class="admin__field-control">
+                <input type="text" title="<?= $block->escapeHtml(__('Card Verification Number')) ?>"
+                       class="required-entry validate-cc-cvn admin__control-cvn admin__control-text"
+                       id="<?= /* @noEscape */ $code ?>_cc_cid"
+                       name="payment[cc_cid]" value="<?= /* @noEscape */ $block->getInfoData('cc_cid') ?>"/>
+                <?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
+                    'oncopy',
+                    "event.preventDefault();",
+                    '#' . $code . '_cc_cid'
+                ) ?>
+                <?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
+                    'oncut',
+                    "event.preventDefault();",
+                    '#' . $code . '_cc_cid'
+                ) ?>
+                <?= /* @noEscape */ $secureRenderer->renderEventListenerAsTag(
+                    'onpaste',
+                    "event.preventDefault();",
+                    '#' . $code . '_cc_cid'
+                ) ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</fieldset>
+<?= /* @noEscape */ $secureRenderer->renderStyleAsTag(
+    "display:none",
+    'fieldset#payment_form_' . /* @noEscape */ $code
+) ?>
+

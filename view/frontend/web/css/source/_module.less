@@ -1,0 +1,63 @@
+//
+//  Common
+//  ---------------------------------------------
+
+& when (@media-common = true) {
+    .syspay-payment {
+        &.payment-method {
+            .ccard {
+                .cc-owner {
+                    .input-text {
+                        width: 225px;
+                    }
+                }
+            }
+
+            .saved-card {
+                .list {
+                    display: inline-block;
+
+                    .control {
+                        width: 225px;
+                    }
+                }
+
+                .actions {
+                    display: inline-block;
+                    margin-left: 15px;
+
+                    div[data-role="delete-confirm"] {
+                        display: none;
+                    }
+
+                    .delete {
+                        .lib-icon-font(
+                            @icon-edit,
+                            @_icon-font-size: 18px,
+                            @_icon-font-line-height: 20px,
+                            @_icon-font-text-hide: true,
+                            @_icon-font-color: @minicart-icons-color,
+                            @_icon-font-color-hover: @primary__color,
+                            @_icon-font-color-active: @minicart-icons-color
+                        );
+                        .lib-icon-font-symbol(
+                            @_icon-font-content: @icon-trash
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__s) {
+    //.syspay-payment {
+    //    &.payment-method {
+    //
+    //    }
+    //}
+}

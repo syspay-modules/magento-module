@@ -1,0 +1,26 @@
+{
+    "syspay_customer_card_token": {
+        "column": {
+            "id": true,
+            "customer_id": true,
+            "token": true,
+            "status": true,
+            "card_display": true,
+            "card_type": true,
+            "creating_date": true,
+            "expiration_date": true,
+            "mandate_status": true,
+            "mandate_currency": true,
+            "mandate_start_date": true,
+            "mandate_end_date": true
+        },
+        "index": {
+            "SYSPAY_CUSTOMER_CARD_TOKEN_ID": true,
+            "SYSPAY_CUSTOMER_CARD_TOKEN_CUSTOMER_ID": true
+        },
+        "constraint": {
+            "SYSPAY_CUSTOMER_CARD_TOKEN_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID": true,
+            "PRIMARY": true
+        }
+    }
+}

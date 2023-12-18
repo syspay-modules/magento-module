@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="payment_method_assign_data_syspay">
+        <observer name="syspay_gateway_data_assign" instance="SysPay\Payment\Observer\DataAssignObserver" />
+    </event>
+    <event name="syspay_payment_gateway_sale_response_handle_after">
+        <observer name="syspay_gateway_sale_response_handle_after_observer" instance="SysPay\Payment\Observer\SaleResponseHandleAfterObserver" />
+    </event>
+    <event name="syspay_payment_gateway_authorization_response_handle_after">
+        <observer name="syspay_gateway_authorization_response_handle_after_observer" instance="SysPay\Payment\Observer\SaleResponseHandleAfterObserver" />
+    </event>
+        <event name="syspay_payment_gateway_ems_update_payment_status_response_handle_after">
+            <observer name="syspay_payment_ems_update_payment_status_observer" instance="SysPay\Payment\Observer\SaleResponseHandleAfterObserver"/>
+        </event>
+    <event name="syspay_payment_http_ems_request_handler_payment_transaction_after">
+        <observer name="syspay_payment_http_ems_request_handler_payment_transaction_after_observer"
+                  instance="SysPay\Payment\Observer\EmsRequestHandlerPaymentTransactionAfter"/>
+    </event>
+
+</config>

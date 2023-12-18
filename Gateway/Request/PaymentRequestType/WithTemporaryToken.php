@@ -1,0 +1,45 @@
+<?php
+
+namespace SysPay\Payment\Gateway\Request\PaymentRequestType;
+
+class WithTemporaryToken extends AbstractPaymentRequestTypeBuilder
+{
+
+    /**
+     * @return array
+     */
+    public function getBody(): array
+    {
+        return [
+            self::FLOW_KEY => self::FLOW_CODE,
+            self::INTERACTIVE_KEY => $this->getIsInteractive(),
+            self::EMS_URL_KEY => $this->getEmsUrl(),
+            self::RETURN_URL_KEY => $this->getReturnUrl(),
+            self::CUSTOMER_KEY => $this->getCustomerData(),
+            self::PAYMENT_METHOD_KEY => [
+                self::TOKEN_KEY_KEY => $this->getTmpPaymentToken(),
+            ],
+            self::REFERENCE_KEY => $this->getReferenceId(),
+            self::AMOUNT_KEY => $this->getAmountInCents(),
+            self::CURRENCY_KEY => $this->getCurrencyCode(),
+            self::PREAUTH_KEY => $this->isAuthorize,
+
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri(): string
+    {
+        return 'merchant/payment';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTmpPaymentToken(): string
+    {
+        return $this->subjectReader->readTmpPaymentToken($this->buildSubject);
+    }
+}

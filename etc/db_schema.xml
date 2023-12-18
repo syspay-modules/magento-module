@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="syspay_customer_card_token" resource="default" engine="innodb" comment="CardToken">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Id Column"/>
+        <column xsi:type="int" name="customer_id" padding="10" unsigned="true" nullable="false" identity="false"
+                comment="Customer Id Column"/>
+        <column xsi:type="int" name="token" padding="10" unsigned="true" nullable="false" identity="false"
+                comment="Token Column"/>
+        <column xsi:type="varchar" name="status" nullable="false" length="255" comment="Status Column"/>
+        <column xsi:type="varchar" name="card_display" nullable="false" length="255" comment="Display card"/>
+        <column xsi:type="varchar" name="card_type" nullable="false" length="32" comment="Display type"/>
+        <column xsi:type="varchar" name="creating_date" nullable="false" length="255" comment="Creating Date Column"/>
+        <column xsi:type="varchar" name="expiration_date" nullable="false" length="255"
+                comment="Expiration Date Column"/>
+        <column xsi:type="varchar" name="mandate_status" nullable="false" length="255" comment="Mandate Status Column"/>
+        <column xsi:type="varchar" name="mandate_currency" nullable="false" length="255"
+                comment="Mandate Currency Column"/>
+        <column xsi:type="varchar" name="mandate_start_date" nullable="false" length="255"
+                comment="Mandate Start Date Column"/>
+        <column xsi:type="varchar" name="mandate_end_date" nullable="false" length="255"
+                comment="Mandate End Date Column"/>
+        <constraint xsi:type="foreign" referenceId="SYS_CUSTOMER_CARD_TOKEN_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID"
+                    table="syspay_customer_card_token" column="customer_id" referenceTable="customer_entity"
+                    referenceColumn="entity_id" onDelete="CASCADE"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index referenceId="SYSPAY_CUSTOMER_CARD_TOKEN_ID" indexType="btree">
+            <column name="id"/>
+        </index>
+        <index referenceId="SYSPAY_CUSTOMER_CARD_TOKEN_CUSTOMER_ID" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+    </table>
+</schema>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <syspay>
+                <model>SysPay\Payment\Model\Method\Facade</model>
+                <title>SysPay Credit Card</title>
+                <payment_action>authorize</payment_action>
+                <active>0</active>
+                <environment>sandbox</environment>
+                <client_side_tokenization_script>https://cdn.syspay.com/js/syspay.tokenizer-current.js</client_side_tokenization_script>
+                <is_save_card_enabled>1</is_save_card_enabled>
+                <debug>0</debug>
+                <can_sale>1</can_sale>
+                <can_use_checkout>1</can_use_checkout>
+                <can_use_internal>1</can_use_internal>
+                <is_gateway>1</is_gateway>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_refund>1</can_refund>
+                <can_void>1</can_void>
+                <can_edit>1</can_edit>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_cancel>1</can_cancel>
+                <can_review_payment>1</can_review_payment>
+                <can_deny_payment>1</can_deny_payment>
+                <cctypes>VI,MC</cctypes>
+                <allowedcurrency>EUR</allowedcurrency>
+                <useccv>1</useccv>
+                <order_status>processing</order_status>
+                <public_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <sandbox_public_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <sandbox_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <order_place_redirect_url>1</order_place_redirect_url>
+
+                <payment_flow>2</payment_flow>
+            </syspay>
+        </payment>
+    </default>
+</config>
